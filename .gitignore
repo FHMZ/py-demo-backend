@@ -1,0 +1,6 @@
+# dependencies
+.idea
+.idea*
+
+.venv
+.venv*
