@@ -11,3 +11,7 @@ to run with debug:
 ```
 flask run --debug
 ```
+to run with docker-compose:
+```
+docker-compose up
+```

@@ -1,0 +1,6 @@
+name: CeleroCustomLayer
+services:
+  web:
+    build: .
+    ports:
+      - 5000:5000
