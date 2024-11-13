@@ -1,3 +1,6 @@
+#FLAKE IS USED AS A LINTER. IT BASICALLY HELPS TO ENFORCE PEP 8 STYLE GUIDELINES
+
+[flake8]
 max-line-length = 100
 ignore = E203, W503  # Ignore specific PEP 8 warnings, customize as needed
 exclude = .git,__pycache__,docs
