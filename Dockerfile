@@ -7,7 +7,7 @@ LABEL maintainer="EasyGroupIT"
 # Project Directory
 WORKDIR /app
 
-# Copy the app.py file
+# Copy the run.py file
 COPY ./app.py /app/app.py
 
 # Package Install
