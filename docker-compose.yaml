@@ -1,6 +1,14 @@
 name: CeleroCustomLayer
 services:
-  web:
-    build: .
+  ms-trx:
+    build:
+      context: ./ms-transaction
+      target: dev
+      dockerfile: Dockerfile
     ports:
       - 5000:5000
+  ms-prx:
+    build:
+      context: ./ms-process
+      target: dev
+      dockerfile: Dockerfile
