@@ -1,0 +1,6 @@
+#It will format the code according to the configs below
+
+[tool.black]
+line-length = 100
+skip-string-normalization = true
+target-version = ['py39']
