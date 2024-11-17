@@ -26,6 +26,18 @@ services:
       postgres:
         condition: service_healthy
 
+  ms-logger:
+    build:
+      context: ./ms-logger
+      target: dev
+      dockerfile: Dockerfile
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
   rabbitmq:
     image: rabbitmq:3.13.6-management-alpine
     ports:
