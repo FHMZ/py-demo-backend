@@ -7,5 +7,4 @@ class SetupService(SingletonClass):
         response = requests.post(
             "https://webhook.site/03b4fe0c-02f4-4841-ba79-5ab3857976ab",
             json=payload)
-        print(str(response))
-        return {'protocol': '123'}
+        return {'status_code': response.status_code, 'text': response.text}

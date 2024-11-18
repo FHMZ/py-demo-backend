@@ -18,8 +18,14 @@ if __name__ == "__main__":
     channel = RabbitMQ().get_channel()
     channel.queue_declare(
         queue='setup_add_account', durable=True)
+    channel.queue_declare(
+        queue='logger', durable=True)
     channel.queue_bind(
         queue='setup_add_account',
         exchange='amq.topic',
-        routing_key='*.setup.add_account.*')
+        routing_key='process.setup.add_account.*')
+    channel.queue_bind(
+        queue='logger',
+        exchange='amq.topic',
+        routing_key='*.*.*.*')
     app.run(host="0.0.0.0", port=5000, debug=True)

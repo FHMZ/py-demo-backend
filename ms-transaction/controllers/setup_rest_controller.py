@@ -12,8 +12,7 @@ class SetupRestController(SingletonClass):
     @setup_rest_controller.route('/api/setup/add_account', methods=["POST"])
     def add_account():
         SetupValidation().validate_add_account(request)
-        id = uuid.uuid4()
-        trx_id = f"setup.add_account.{id}"
+        trx_id = f"setup.add_account.{uuid.uuid4()}"
         body = json.dumps({
             "trx_id": trx_id,
             "fi_id": 1,
@@ -23,6 +22,6 @@ class SetupRestController(SingletonClass):
         channel = RabbitMQ().get_channel()
         channel.basic_publish(
             exchange='amq.topic',
-            routing_key=f"process.setup.add_account.{id}",
+            routing_key=f"process.{trx_id}",
             body=body)
         return jsonify({"trx_id": trx_id}), 200
