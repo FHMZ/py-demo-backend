@@ -1,9 +1,9 @@
-from controllers.setup_controller import setup_controller
+from controllers.setup_rest_controller import setup_rest_controller
 from flask import Flask, jsonify
 from rabbitmq import RabbitMQ
 
 app = Flask(__name__)
-app.register_blueprint(setup_controller)
+app.register_blueprint(setup_rest_controller)
 
 
 @app.errorhandler(Exception)

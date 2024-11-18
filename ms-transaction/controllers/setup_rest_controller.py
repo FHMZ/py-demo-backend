@@ -5,11 +5,11 @@ from rabbitmq import RabbitMQ
 import uuid
 import json
 
-setup_controller = Blueprint("controller", __name__)
+setup_rest_controller = Blueprint("controller", __name__)
 
 
-class SetupController(SingletonClass):
-    @setup_controller.route('/api/setup/add_account', methods=["POST"])
+class SetupRestController(SingletonClass):
+    @setup_rest_controller.route('/api/setup/add_account', methods=["POST"])
     def add_account():
         SetupValidation().validate_add_account(request)
         id = uuid.uuid4()
