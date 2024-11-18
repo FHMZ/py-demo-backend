@@ -7,6 +7,9 @@ import json
 class SetupAmqpController(SingletonClass):
     def setup_add_account_callback(self, channel, method, properties, body):
         payload = SetupComponent().add_account_from_amqp(json.loads(body))
-        respone = SetupService().add_account(payload)
-        print(id(self), payload, respone)
+        response = SetupService().add_account(payload)
         channel.basic_ack(delivery_tag=method.delivery_tag)
+        channel.basic_publish(
+            exchange='amq.topic',
+            routing_key=f"complete.{payload.trx_id}",
+            body=json.dumps(response))
