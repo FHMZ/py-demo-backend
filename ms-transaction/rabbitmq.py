@@ -1,4 +1,5 @@
 import pika
+import os
 from util import SingletonClass
 
 
@@ -9,9 +10,10 @@ class RabbitMQ(SingletonClass):
         if self.connection == None:
             self.connection = pika.BlockingConnection(
                 pika.ConnectionParameters(
-                    host='localhost',
+                    host=os.getenv('RABBITMQ_HOST'),
                     credentials=pika.credentials.PlainCredentials(
-                        'admin', 'celero123')
+                        os.getenv('RABBITMQ_USER'),
+                        os.getenv('RABBITMQ_PASS'))
                 )
             )
         channel = self.connection.channel()
