@@ -2,11 +2,6 @@ from rabbitmq import RabbitMQ
 from controllers.setup_amqp_controller import SetupAmqpController
 
 
-def setup_add_account_callback(channel, method, properties, body):
-    print(body)
-    channel.basic_ack(delivery_tag=method.delivery_tag)
-
-
 if __name__ == "__main__":
     channel = RabbitMQ().get_channel()
     channel.queue_declare(
