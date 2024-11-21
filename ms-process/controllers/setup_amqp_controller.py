@@ -1,6 +1,6 @@
 from util import SingletonClass
 from components.setup_component import SetupComponent
-from services.setup_rest_service import SetupRestService
+from services.setup_celero_core_lib_service import SetupCeleroCoreLibService
 import json
 
 
@@ -8,7 +8,7 @@ class SetupAmqpController(SingletonClass):
     def setup_add_account_callback(self, channel, method, properties, body):
         message = json.loads(body)
         request_payload = SetupComponent().add_account_from_amqp(message)
-        response = SetupRestService().add_account(request_payload)
+        response = SetupCeleroCoreLibService().add_account(request_payload)
         trx_id = message.get('trx_id')
         channel.basic_publish(
             exchange='amq.topic',

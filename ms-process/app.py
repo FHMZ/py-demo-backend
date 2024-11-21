@@ -1,8 +1,9 @@
 from rabbitmq import RabbitMQ
 from controllers.setup_amqp_controller import SetupAmqpController
+import logging
 
 
-if __name__ == "__main__":
+def setup_rabbitmq():
     channel = RabbitMQ().get_channel()
     channel.queue_declare(
         queue='setup_add_account', durable=True)
@@ -21,3 +22,8 @@ if __name__ == "__main__":
         queue='setup_add_account',
         on_message_callback=SetupAmqpController().setup_add_account_callback)
     channel.start_consuming()
+
+
+if __name__ == "__main__":
+    logging.basicConfig()
+    setup_rabbitmq()

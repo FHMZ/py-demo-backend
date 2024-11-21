@@ -1,20 +1,15 @@
 from controllers.setup_rest_controller import setup_rest_controller
 from flask import Flask, jsonify
 from rabbitmq import RabbitMQ
-
-app = Flask(__name__)
-app.register_blueprint(setup_rest_controller)
-
-
-@app.errorhandler(Exception)
-def error_handler(e):
-    if (hasattr(e, 'code') and e.code != None):
-        return '', e.code
-    else:
-        return '', 500
+from concurrent import futures
+import logging
+import grpc
+import controllers.setup_pb2
+import controllers.setup_pb2_grpc
+from controllers.setup_grpc_controller import SetupGrpcController
 
 
-if __name__ == "__main__":
+def setup_rabbitmq():
     channel = RabbitMQ().get_channel()
     channel.queue_declare(
         queue='setup_add_account', durable=True)
@@ -28,4 +23,26 @@ if __name__ == "__main__":
         queue='logger',
         exchange='amq.topic',
         routing_key='*.*.*.*')
+
+
+def build_api_rest():
+    app = Flask(__name__)
+    app.register_blueprint(setup_rest_controller)
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+def build_api_grpc():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    controllers.setup_pb2_grpc.add_SetupServicer_to_server(
+        SetupGrpcController(),
+        server)
+    server.add_insecure_port('[::]:5001')
+    server.start()
+    server.wait_for_termination()
+
+
+if __name__ == "__main__":
+    logging.basicConfig()
+    setup_rabbitmq()
+    build_api_rest()
+    build_api_grpc()
