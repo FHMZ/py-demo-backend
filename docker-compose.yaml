@@ -60,9 +60,9 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.13.6-management-alpine
-    ports:
-      - 5672:5672
-      - 15672:15672
+    # ports:
+    #   - 5672:5672
+    #   - 15672:15672
     networks:
       - default
     environment:
@@ -76,8 +76,8 @@ services:
 
   mongo:
     image: mongo:8.0.3
-    ports:
-      - 27017:27017
+    # ports:
+    #   - 27017:27017
     networks:
       - default
     environment:
