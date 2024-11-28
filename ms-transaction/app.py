@@ -7,6 +7,7 @@ import grpc
 import controllers.setup_pb2
 import controllers.setup_pb2_grpc
 from controllers.setup_grpc_controller import SetupGrpcController
+from multiprocessing import Process
 
 
 def setup_rabbitmq():
@@ -42,7 +43,15 @@ def build_api_grpc():
 
 
 if __name__ == "__main__":
-    logging.basicConfig()
+    # logging.basicConfig()
     setup_rabbitmq()
-    build_api_rest()
-    build_api_grpc()
+    grpc_process = Process(target=build_api_grpc)
+    rest_process = Process(target=build_api_rest)
+    grpc_process.start()
+    print("gRPC Server running on port 5001")
+    # logger.info("gRPC Server running on port 50051")
+    rest_process.start()
+    print("REST Server running on port 5000")
+    # logger.info("REST Server running on port 5000")
+    grpc_process.join()
+    rest_process.join()
