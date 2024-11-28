@@ -1,13 +1,12 @@
-from controllers.setup_rest_controller import setup_rest_controller
 from flask import Flask, jsonify
 from rabbitmq import RabbitMQ
 from concurrent import futures
-import logging
 import grpc
-import controllers.setup_pb2
-import controllers.setup_pb2_grpc
-from controllers.setup_grpc_controller import SetupGrpcController
 from multiprocessing import Process
+import controllers.proto.company_pb2
+import controllers.proto.company_pb2_grpc
+from controllers.company_rest_controller import CompanyRestControllerBluePrint
+from controllers.company_grpc_controller import CompanyGrpcController
 
 
 def setup_rabbitmq():
@@ -28,14 +27,14 @@ def setup_rabbitmq():
 
 def build_api_rest():
     app = Flask(__name__)
-    app.register_blueprint(setup_rest_controller)
+    app.register_blueprint(CompanyRestControllerBluePrint)
     app.run(host="0.0.0.0", port=5000, debug=True)
 
 
 def build_api_grpc():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    controllers.setup_pb2_grpc.add_SetupServicer_to_server(
-        SetupGrpcController(),
+    controllers.proto.company_pb2_grpc.add_CompanyServicer_to_server(
+        CompanyGrpcController(),
         server)
     server.add_insecure_port('[::]:5001')
     server.start()
@@ -43,15 +42,10 @@ def build_api_grpc():
 
 
 if __name__ == "__main__":
-    # logging.basicConfig()
     setup_rabbitmq()
     grpc_process = Process(target=build_api_grpc)
     rest_process = Process(target=build_api_rest)
     grpc_process.start()
-    print("gRPC Server running on port 5001")
-    # logger.info("gRPC Server running on port 50051")
     rest_process.start()
-    print("REST Server running on port 5000")
-    # logger.info("REST Server running on port 5000")
     grpc_process.join()
     rest_process.join()
