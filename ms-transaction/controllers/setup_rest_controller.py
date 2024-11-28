@@ -11,7 +11,7 @@ setup_rest_controller = Blueprint("controller", __name__)
 class SetupRestController(SingletonClass):
     @setup_rest_controller.route('/api/setup/add_account', methods=["POST"])
     def add_account():
-        SetupValidation().validate_add_account(request)
+        SetupValidation().validate_rest_add_account(request)
         trx_id = f"setup.add_account.{uuid.uuid4()}"
         body = json.dumps({
             "trx_id": trx_id,
