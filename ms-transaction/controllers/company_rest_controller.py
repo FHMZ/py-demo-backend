@@ -21,7 +21,7 @@ class CompanyRestController(SingletonClass):
                 legal_entity_registration=request.json.get(
                     'legal_entity_registration'),
                 company_id=request.json.get('company_id'),
-                company_name=request.json.get('company_name')), {})
+                company_name=request.json.get('company_name')), {'channel': 'REST'})
         return jsonify(MessageToDict(response)), 200
 
     @CompanyRestControllerBluePrint.route('/api/company/deactivate_company', methods=["POST"])

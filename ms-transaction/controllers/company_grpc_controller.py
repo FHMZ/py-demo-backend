@@ -10,11 +10,13 @@ from google.protobuf.json_format import MessageToDict
 class CompanyGrpcController(controllers.proto.company_pb2_grpc.CompanyServicer):
     def CreateCompany(self, request, context):
         CompanyValidation().validate_grpc_create_company(request)
-        trx_id = f"setup.add_account.{uuid.uuid4()}"
+        trx_id = f"company.create_company.{uuid.uuid4()}"
+        channel = context.get('channel') if isinstance(
+            context, dict) and context and 'channel' in context else "GRPC"
         body = json.dumps({
             "trx_id": trx_id,
             "trx_payload": MessageToDict(request),
-            "trx_channel": "GRPC"})
+            "trx_channel": channel})
         channel = RabbitMQ().get_channel()
         channel.basic_publish(
             exchange='amq.topic',

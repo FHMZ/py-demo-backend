@@ -1,26 +1,26 @@
 from rabbitmq import RabbitMQ
-from controllers.setup_amqp_controller import SetupAmqpController
+from controllers.company_amqp_controller import CompanyAmqpController
 import logging
 
 
 def setup_rabbitmq():
     channel = RabbitMQ().get_channel()
     channel.queue_declare(
-        queue='setup_add_account', durable=True)
+        queue='company_create_company', durable=True)
     channel.queue_declare(
         queue='logger', durable=True)
     channel.queue_bind(
-        queue='setup_add_account',
+        queue='company_create_company',
         exchange='amq.topic',
-        routing_key='process.setup.add_account.*')
+        routing_key='process.company.create_company.*')
     channel.queue_bind(
         queue='logger',
         exchange='amq.topic',
         routing_key='*.*.*.*')
     channel.basic_qos()
     channel.basic_consume(
-        queue='setup_add_account',
-        on_message_callback=SetupAmqpController().setup_add_account_callback)
+        queue='company_create_company',
+        on_message_callback=CompanyAmqpController().create_company_callback)
     channel.start_consuming()
 
 
