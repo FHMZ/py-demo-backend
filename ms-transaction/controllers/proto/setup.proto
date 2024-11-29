@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package setup;
+
+service CeleroCustomLayerSetup {
+    rpc Setup (SetupRequest) returns (SetupResponse);
+}
+
+message SetupRequest {
+    // Bank
+    string bank_branch = 1;
+    string bank_account_number = 2;
+    // Company
+    string company_identity = 3;
+    string company_name = 4;
+    // Account
+    string account_digit = 5;
+    int32 account_type = 6;
+    string account_office = 7;
+    string account_currency = 8;
+    string account_manager_email = 9;
+    string account_external_id = 10;
+    // User
+    string user_first_name = 11;
+    string user_last_name = 12;
+    string user_email = 13;
+    int32 user_phone_area_code = 14;
+    int32 user_phone_number = 15;
+    string user_identity = 16;
+    string user_birth_date = 17;
+}
+
+message SetupResponse {
+    string transaction_id = 1;
+}

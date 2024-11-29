@@ -3,38 +3,32 @@ from rabbitmq import RabbitMQ
 from concurrent import futures
 import grpc
 from multiprocessing import Process
-import controllers.proto.company_pb2
-import controllers.proto.company_pb2_grpc
-from controllers.company_rest_controller import CompanyRestControllerBluePrint
-from controllers.company_grpc_controller import CompanyGrpcController
+import controllers.proto.setup_pb2
+import controllers.proto.setup_pb2_grpc
+from controllers.setup_rest_controller import SetupRestControllerBluePrint
+from controllers.setup_grpc_controller import SetupGrpcController
 
 
 def setup_rabbitmq():
     channel = RabbitMQ().get_channel()
     channel.queue_declare(
-        queue='setup_add_account', durable=True)
-    channel.queue_declare(
-        queue='logger', durable=True)
+        queue='setup', durable=True)
     channel.queue_bind(
-        queue='setup_add_account',
+        queue='setup',
         exchange='amq.topic',
-        routing_key='process.setup.add_account.*')
-    channel.queue_bind(
-        queue='logger',
-        exchange='amq.topic',
-        routing_key='*.*.*.*')
+        routing_key='process.setup.setup.*')
 
 
 def build_api_rest():
     app = Flask(__name__)
-    app.register_blueprint(CompanyRestControllerBluePrint)
+    app.register_blueprint(SetupRestControllerBluePrint)
     app.run(host="0.0.0.0", port=5000, debug=True)
 
 
 def build_api_grpc():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    controllers.proto.company_pb2_grpc.add_CompanyServicer_to_server(
-        CompanyGrpcController(),
+    controllers.proto.setup_pb2_grpc.add_CeleroCustomLayerSetupServicer_to_server(
+        SetupGrpcController(),
         server)
     server.add_insecure_port('[::]:5001')
     server.start()

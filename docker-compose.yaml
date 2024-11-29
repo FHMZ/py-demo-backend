@@ -16,8 +16,6 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      mongo:
-        condition: service_healthy
 
   ms-process:
     build:
@@ -32,38 +30,11 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      mongo:
-        condition: service_healthy
-
-  ms-logger:
-    build:
-      context: ./ms-logger
-      target: dev
-      dockerfile: Dockerfile
-    restart: on-failure
-    environment:
-      RABBITMQ_HOST: ${RABBITMQ_HOST}
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASS: ${RABBITMQ_PASS}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASS: ${POSTGRES_PASS}
-      MONGO_HOST: ${MONGO_HOST}
-      MONGO_DB: ${MONGO_DB}
-      MONGO_USER: ${MONGO_USER}
-      MONGO_PASS: ${MONGO_PASS}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      mongo:
-        condition: service_healthy
 
   rabbitmq:
     image: rabbitmq:3.13.6-management-alpine
-    # ports:
-    #   - 5672:5672
-    #   - 15672:15672
+    ports:
+      - 15673:15672
     networks:
       - default
     environment:
@@ -74,20 +45,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  mongo:
-    image: mongo:8.0.3
-    # ports:
-    #   - 27017:27017
-    networks:
-      - default
-    environment:
-      MONGO_INITDB_DATABASE: ${MONGO_DB}
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
-    healthcheck:
-      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
